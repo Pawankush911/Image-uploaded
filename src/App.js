@@ -1,88 +1,63 @@
-//Only ingle images are supported
-// import React, { useState } from 'react';
 
-// const App= () => {
-//   const [selectedFile, setSelectedFile] = useState(null);
-//   const [error, setError] = useState('');
-
-//   const handleFileChange = (event) => {
-//     const file = event.target.files?.[0];
-//     if (file) {
-//       if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-//         setError('Please select a JPEG or PNG file.');
-//         setSelectedFile(null);
-//       } else {
-//         setSelectedFile(file);
-//         setError('');
-//       }
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <input type="file" onChange={handleFileChange} />
-//       {error && <div style={{ color: 'red' }}>{error}</div>}
-//       {selectedFile && (
-//         <div>
-//           <p>Selected file: {selectedFile.name}</p>
-//           <p>File type: {selectedFile.type}</p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default App;
-
-
-
-//multiple images uploaded to the one time
 
 import React, { useState } from "react";
 
 const App = () => {
-  const [selectedFiles, setSelectedFiles] = useState(null);
-  const [error, setError] = useState("");
+  // const [files, setFiles] = useState( );
+  const[imageFile,setImageFile] = useState([])
+  const[pdfFile,setPDFFile] = useState([])
 
-  const handleFileChange = (event) => {
-    const files = event.target.files;
-    if (files) {
-      let isError = false;
-      Array.from(files).forEach((file) => {
-        if (!isValidFileType(file)) {
-          isError = true;
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    // console.log(selectedFiles);
+    //  setFiles(selectedFiles)
+
+    if (selectedFiles.length >= 0) {
+      for (let i = 0; i < selectedFiles.length; i++) {
+        var file = selectedFiles[i];
+        if (file.type === "application/pdf") {
+          setPDFFile(pdfFile.push(file))
+          console.log(imageFile, "ddd");
+        } else if (file.type === "image/png" || file.type === "image/jpeg") {
+          setImageFile(imageFile.push(file))
+          console.log(pdfFile, "hhhh");
+        } else {
+          alert("Please select the image and pdf file");
         }
-      });
-      if (isError) {
-        setError("Please select only valid file types (e.g., .jpg, .png).");
-        setSelectedFiles(null);
-      } else {
-        setSelectedFiles(files);
-        setError("");
       }
     }
-  };
+  }
+  const Submit=()=>{
 
-  const isValidFileType = (file) => {
-    const allowedTypes = ["image/jpeg", "image/png"];
-    return allowedTypes.includes(file.type);
-  };
+    if(pdfFile.length===0){
+      alert("All image file uploaded successfully")
 
+    }else if(imageFile.length===0){
+      alert("All pdf file uploaded successfully")
+      
+
+    }else if (pdfFile.length > imageFile.length) {
+      alert(
+        "please select only pdf files because maximum file size is " +
+          pdfFile.length
+      );
+    } else if (imageFile.length > pdfFile.length) {
+      alert(
+        "please select only image files because maximum file size is " +
+          imageFile.length
+      );
+    } else if (imageFile.length === pdfFile.length) {
+      alert(
+        "please select any one type files because pdf and image file size is equal "
+      );
+    };
+
+  }
+    
   return (
     <div>
       <input type="file" multiple onChange={handleFileChange} />
-
-      {error && <div style={{ color: "red" }}>{error}</div>}
-      {selectedFiles && (
-        <div>
-          <h2>Selected files:</h2>
-          <ul>
-            {[...selectedFiles].map((file, index) => (
-              <li key={index}>{file.name}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <button onClick={Submit}>Submit</button>
     </div>
   );
 };
